@@ -44,6 +44,11 @@ Widget::Widget(QWidget *parent)
     scoreLbl->setFont(font);
     scoreLbl->setAlignment(Qt::AlignCenter);
     scoreLbl->setStyleSheet(QString(LBLSTYLESHEET).arg(5).arg(20));
+
+    backgroundSound=new QSound(":/new/prefix1/11143.wav",this);
+    backgroundSound->play();  //播放
+    backgroundSound->setLoops(-1);//循环次数，-1代表一直循环
+
 }
 
 Widget::~Widget()
@@ -87,7 +92,7 @@ void Widget::onWin()
 void Widget::resizeEvent(QResizeEvent *)
 {
     // 计算宽度和高度的缩放比例
-    ratioW = width() / 404.0;
+    ratioW = width() / 406.0;
     ratioH = height() / 606.0;
     // 重新设置字体
     QFont font;

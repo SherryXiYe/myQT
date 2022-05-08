@@ -5,7 +5,9 @@
 #include <QTimer>
 #include <QPainter>
 #include <QMouseEvent>
-
+#include <QList>
+#include <QEventLoop>
+#include<QSound>
 
 // 手势的方向
 enum GestureDirect
@@ -66,6 +68,8 @@ private:
     QList<Animation> animationList; // 存储所有需要展现的动画
     bool isAnimating;     // 是否在播放动画效果
     QTimer timer;      // 计时器
+
+    QSound* combineSound;  //合并时的音效
 
     // 以下为一些信号
 signals:

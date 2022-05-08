@@ -21,7 +21,7 @@ GameWidget::GameWidget(QWidget *parent) :
     memset(board, 0, sizeof(board));  // 初始化board数组
     score = 0;   // 分数初始化为0
     digitCount = 2; // 数码个数初始化为2
-
+    combineSound=new QSound(":/new/prefix1/y781.wav",this);
     isAnimating = false;   // 没有在播放动画效果
     init2Block(); // 初始化两个方格
 }
@@ -112,10 +112,10 @@ void GameWidget::paintEvent(QPaintEvent *)
         }
         return;
     }
-    QBrush brush(QColor::fromRgb(128,138,135)); // 构造一个画刷 颜色为R G B分量分别为141 121 81的颜色
+    QBrush brush(QColor::fromRgb(8,46,84)); // 构造一个画刷 颜色为R G B分量分别为141 121 81的颜色
     painter.setBrush(brush);
     painter.setPen(Qt::NoPen); // 设置画笔为空笔 目的是使绘制的图形没有描边
-    painter.drawRoundedRect(QRectF(2 * ratioW, 2 * ratioH, width() - 4 * ratioW, height() - 4 * ratioH), rX, rY);
+    painter.drawRoundedRect(QRectF(2 * ratioW, 2 * ratioH, width() - 4 * ratioW, height() - 4 * ratioH),rX,rY);
 
     QFont font;       //构造字体：Consolas 粗体 大小为40像素
     font.setFamily("Consolas");
@@ -138,7 +138,7 @@ void GameWidget::paintEvent(QPaintEvent *)
             }
             else  // 如果方格中没有数字，则绘制小方格
             {
-                brush.setColor(QColor::fromRgb(171, 165, 141));   // 设置画刷颜色为 RGB分量为171 165 141的颜色
+                brush.setColor(QColor::fromRgb(176, 224, 230));   // 设置画刷颜色为 RGB分量为171 165 141的颜色
                 painter.setBrush(brush);
                 painter.drawRoundedRect(QRectF(7 * ratioW + (w + 5 * ratioW) * j, 7 * ratioH + (h + 5 * ratioH) * i, w, h), rX, rY);
             }
@@ -333,6 +333,11 @@ void GameWidget::onGestureMove(GestureDirect direct)
         }
         break;
     }
+    if(combine)   //合并时播放音效
+    {
+        combineSound->play();
+        combineSound->setLoops(1);
+    }
     if ((move || combine) && digitCount != 16) // 移动和合并完成后，如果数字没有填满，则随机生成一个行号和列号，如果该位置为0，则在该位置填上2，否则继续随机生成一个位置直到该位置为0.
     {
         i = rand() % 4, j = rand() % 4;
@@ -361,12 +366,12 @@ bool GameWidget::drawAnimation(QPainter &painter)
     painter.setFont(font);
 
     bool ok = true;    // 标识所有方格动画是否都播放完毕
-    QBrush brush(QColor::fromRgb(141, 121, 81));
+    QBrush brush(QColor::fromRgb(8,46,84));
     painter.setBrush(brush);
     painter.setPen(Qt::NoPen);  // 设置画笔为空笔 目的是使绘制的图形没有描边
     painter.drawRoundedRect(QRectF(2 * ratioW, 2 * ratioH, width() - 4 * ratioW, height() - 4 * ratioH), rX, rY);
 
-    brush.setColor(QColor::fromRgb(171, 165, 141));
+    brush.setColor(QColor::fromRgb(176, 224, 230));
     painter.setBrush(brush);
     for (int i = 0; i < 4; i++)   // 循环绘制游戏面板小方格
         for (int j = 0; j < 4; j++)

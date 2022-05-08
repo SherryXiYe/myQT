@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>11143.wav</file>
+        <file>y781.wav</file>
+    </qresource>
+</RCC>
