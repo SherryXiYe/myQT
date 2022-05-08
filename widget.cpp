@@ -13,12 +13,12 @@ Widget::Widget(QWidget *parent)
         file.close();
     }
 
-   /* // 构造一个游戏部件对象，连接分数增加、游戏结束、获胜信号和对应的槽函数
+    // 构造一个游戏部件对象，连接分数增加、游戏结束、获胜信号和对应的槽函数
     gameWidget = new GameWidget(this);
     gameWidget->setGeometry(2, 200, 400, 400);
     connect(gameWidget, SIGNAL(ScoreInc(int)), this, SLOT(onScoreInc(int)));
     connect(gameWidget, SIGNAL(GameOver()), this, SLOT(onGameOver()));
-    connect(gameWidget, SIGNAL(win()), this, SLOT(onWin()));*/
+    connect(gameWidget, SIGNAL(win()), this, SLOT(onWin()));
 
     // 构造一个字体对象
     QFont font;
@@ -31,7 +31,7 @@ Widget::Widget(QWidget *parent)
     restartBtn->setGeometry(100, 120, 200, 50);
     restartBtn->setFont(font);
     restartBtn->setStyleSheet(QString(BTNSTYLESHEET).arg(3).arg(15));
-    //connect(restartBtn, SIGNAL(clicked()), gameWidget, SLOT(restart()));
+    connect(restartBtn, SIGNAL(clicked()), gameWidget, SLOT(restart()));
 
     // 构造一个标签对象
     highScoreLbl = new QLabel(QString("High Score:\n%1").arg(highScore),this);
@@ -54,7 +54,7 @@ Widget::~Widget()
     delete restartBtn;
     delete scoreLbl;
     delete highScoreLbl;
-    //delete gameWidget;
+    delete gameWidget;
 }
 
 void Widget::onScoreInc(int score)
@@ -103,7 +103,7 @@ void Widget::resizeEvent(QResizeEvent *)
     highScoreLbl->setStyleSheet(QString(LBLSTYLESHEET).arg(5 * ratioW).arg(20 * ratioW));
     scoreLbl->setStyleSheet(QString(LBLSTYLESHEET).arg(5 * ratioW).arg(20 * ratioW));
     // 重置子部件大小和位置
-    //gameWidget->setGeometry(2 * ratioW, 200 * ratioH, 400 * ratioW, 400 * ratioH);
+    gameWidget->setGeometry(2 * ratioW, 200 * ratioH, 400 * ratioW, 400 * ratioH);
     restartBtn->setGeometry(100 * ratioW, 120 * ratioH, 200 * ratioW, 50 * ratioH);
     highScoreLbl->setGeometry(209 * ratioW, 20 * ratioH, 180 * ratioW, 70 * ratioH);
     scoreLbl->setGeometry(15 * ratioW, 20 * ratioH, 180 * ratioW, 70 * ratioH);

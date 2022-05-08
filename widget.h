@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include <QMessageBox>
 #include <QFile>
+#include "gamewidget.h"
 
 #define LBLSTYLESHEET "QLabel {color: orange;background: #FFFFCC;border: %1px solid orange;border-radius: %2px;}"
 #define BTNSTYLESHEET "QPushButton {color: red;background: lightgray;border: %1px solid darkgray;border-radius: %2px;} QPushButton:pressed{color: white;background: orange;border: %1px solid darkgray;border-radius: %2px;}"
@@ -21,19 +22,12 @@ public:
     ~Widget();
 
 private:
-    // “restart”按钮
-    QPushButton *restartBtn;
-    // “score”标签
-    QLabel *scoreLbl;
-    // “HightScore”标签
-    QLabel *highScoreLbl;
-    // 游戏部件
-    //GameWidget *gameWidget;
-    // 宽度和高度的缩放比例 用来使窗口部件随主窗口的尺寸改变而改变位置与尺寸
-    qreal ratioW, ratioH;
-    // 记录最高分
-    int highScore;
-
+    QPushButton *restartBtn;    // “restart”按钮
+    QLabel *scoreLbl;       // “score”标签
+    QLabel *highScoreLbl;     // “HightScore”标签
+    GameWidget *gameWidget; // 游戏部件
+    qreal ratioW, ratioH;   // 宽度和高度的缩放比例 用来使窗口部件随主窗口的尺寸改变而改变位置与尺寸
+    int highScore; // 记录最高分
 protected:
     void resizeEvent(QResizeEvent *);       // 窗口尺寸改变触发的事件
 
