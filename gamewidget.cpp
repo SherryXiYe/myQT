@@ -95,7 +95,23 @@ void GameWidget::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);   // 构造一个QPainter对象 使用它来进行绘图
     painter.setRenderHint(QPainter::Antialiasing); // 设置反锯齿绘图
-
+    if (isAnimating)    // 如果正在播放动画效果则绘制缓存位图
+    {
+        if (drawAnimation(painter))
+        {
+            isAnimating = false;
+            timer.stop();
+            animationList.clear();      //清除所有动画
+            if (digitCount == 16)
+            {
+                if (checkGameOver())     // 如果数字填满了 检测游戏是否over
+                    emit GameOver();
+            }
+            if (checkWin())        // 检测游戏是否获胜
+                emit win();
+        }
+        return;
+    }
     QBrush brush(QColor::fromRgb(128,138,135)); // 构造一个画刷 颜色为R G B分量分别为141 121 81的颜色
     painter.setBrush(brush);
     painter.setPen(Qt::NoPen); // 设置画笔为空笔 目的是使绘制的图形没有描边
