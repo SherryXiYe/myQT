@@ -26,6 +26,7 @@ private:
     QLabel *scoreLbl;       // “score”标签
     QLabel *highScoreLbl;     // “HightScore”标签
     GameWidget *gameWidget; // 游戏部件
+    qreal b_w,b_h;   //大方框的宽和高
     qreal ratioW, ratioH;   // 宽度和高度的缩放比例 用来使窗口部件随主窗口的尺寸改变而改变位置与尺寸
     int highScore; // 记录最高分
 protected:
