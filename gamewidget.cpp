@@ -131,24 +131,23 @@ void GameWidget::mousePressEvent(QMouseEvent *e) // 获取起点坐标
 
 void GameWidget::mouseReleaseEvent(QMouseEvent *e)
 {
-    // 根据终点坐标和起点坐标计算XY坐标的增量
-    float dX = (float)(e->pos().x() - startPos.x());
+    if (isAnimating) // 如果在播放动画效果则直接退出防止重复产生手势事件
+        return;
+    float dX = (float)(e->pos().x() - startPos.x()); // 根据终点坐标和起点坐标计算XY坐标的增量
     float dY = (float)(e->pos().y() - startPos.y());
-    // 确定手势方向
-    GestureDirect dir;
-    if (abs(dX) > abs(dY))
+    if (abs(dX) > abs(dY)) // 确定手势方向，并执行该方向的变化（gestureMove）
     {
         if (dX < 0)
-            emit dir=LEFT;
+            emit GestureMove(LEFT);
         else
-            emit dir=RIGHT;
+            emit GestureMove(RIGHT);
     }
     else
     {
         if (dY < 0)
-            emit dir=UP;
+            emit GestureMove(UP);
         else
-            emit dir=DOWN;
+            emit GestureMove(DOWN);
     }
 }
 
