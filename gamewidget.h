@@ -52,6 +52,8 @@ private:
     void resizeEvent(QResizeEvent *);    // 窗口尺寸改变事件
     void mousePressEvent(QMouseEvent *);  // 鼠标按下触发的事件
     void mouseReleaseEvent(QMouseEvent *); // 鼠标释放触发的事件
+    bool playAnimation(Animation&, QPainter&);   // 播放一帧动画
+    bool drawAnimation(QPainter&);  // 绘制动画效果
 
     int board[4][4];     // 游戏面板 存储每个格子的数值
     int digitCount;    // 数码的个数 存储当前面板上的数字的个数

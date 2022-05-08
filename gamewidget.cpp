@@ -15,9 +15,14 @@ GameWidget::GameWidget(QWidget *parent) :
     QOpenGLWidget(parent),
     timer(this)
 {
+    connect(this, SIGNAL(GestureMove(GestureDirect)), SLOT(onGestureMove(GestureDirect))); // 连接手势移动信号和相应的槽函数
+    connect(&timer, SIGNAL(timeout()), this, SLOT(update()));  // 连接时钟信号和画板更新的槽
+
     memset(board, 0, sizeof(board));  // 初始化board数组
     score = 0;   // 分数初始化为0
     digitCount = 2; // 数码个数初始化为2
+
+    isAnimating = false;   // 没有在播放动画效果
     init2Block(); // 初始化两个方格
 }
 
@@ -65,7 +70,7 @@ bool GameWidget::checkWin()  // 循环检测是否某个方格的数字为2048�
 
 void GameWidget::resizeEvent(QResizeEvent *)
 {
-    ratioW = width() / 800.0, ratioH = height() / 800.0;
+    ratioW = width() / 400.0, ratioH = height() / 400.0;
     // 计算每个小格子的宽度和高度
     w = width() - 4 * ratioW, h = height() - 4 * ratioH;
     w = (w - 25 * ratioW) / 4, h = (h - 25 * ratioH) / 4;
@@ -328,4 +333,102 @@ void GameWidget::onGestureMove(GestureDirect direct)
 
     isAnimating = true; // 开始绘制动画效果
     timer.start(10);   // 启动计时器
+}
+
+bool GameWidget::drawAnimation(QPainter &painter)
+{
+    QList<Animation>::iterator it;      // 动画列表的迭代器
+    QFont font;
+    font.setFamily("Consolas");
+    font.setBold(true);
+    font.setPixelSize(40 * ratioH);
+    painter.setFont(font);
+
+    bool ok = true;    // 标识所有方格动画是否都播放完毕
+    QBrush brush(QColor::fromRgb(141, 121, 81));
+    painter.setBrush(brush);
+    painter.setPen(Qt::NoPen);  // 设置画笔为空笔 目的是使绘制的图形没有描边
+    painter.drawRoundedRect(QRectF(2 * ratioW, 2 * ratioH, width() - 4 * ratioW, height() - 4 * ratioH), rX, rY);
+
+    brush.setColor(QColor::fromRgb(171, 165, 141));
+    painter.setBrush(brush);
+    for (int i = 0; i < 4; i++)   // 循环绘制游戏面板小方格
+        for (int j = 0; j < 4; j++)
+            painter.drawRoundedRect(QRectF(7 * ratioW + (w + 5 * ratioW) * j, 7 * ratioH + (h + 5 * ratioH) * i, w, h), rX, rY);
+
+    for (it = animationList.begin(); it != animationList.end(); it++)    // 循环播放每个方格动画
+        if (!playAnimation(*it, painter))
+            ok = false;
+    return ok;
+}
+
+bool GameWidget::playAnimation(Animation& a, QPainter& painter)
+{
+    bool rtn = false;
+    QBrush brush(Qt::SolidPattern);
+    if (a.type == MOVE)    // 移动方格位置
+    {
+        switch (a.direct)
+        {
+        case LEFT:
+            if (a.startPos.x() > a.endPos.x())
+                a.startPos += dPos[LEFT];
+            else
+                a.startPos = a.endPos, rtn = true;
+            break;
+        case RIGHT:
+            if (a.startPos.x() < a.endPos.x())
+                a.startPos += dPos[RIGHT];
+            else
+                a.startPos = a.endPos, rtn = true;
+            break;
+        case UP:
+            if (a.startPos.y() > a.endPos.y())
+                a.startPos += dPos[UP];
+            else
+                a.startPos = a.endPos, rtn = true;
+            break;
+        case DOWN:
+            if (a.startPos.y() < a.endPos.y())
+                a.startPos += dPos[DOWN];
+            else
+                a.startPos = a.endPos, rtn = true;
+        }
+        if (!rtn)       // 如果方格移动到终点
+        {
+            brush.setColor(digitBkg[getBitCount(a.digit)]);
+            painter.setBrush(brush);
+            painter.drawRoundedRect(QRectF(a.startPos.x(), a.startPos.y(), w, h), rX, rY);
+            painter.setPen(QColor::fromRgb(0, 0, 0));
+            painter.drawText(QRectF(a.startPos.x(), a.startPos.y(), w, h), Qt::AlignCenter,
+                             QString::number(a.digit));
+        }
+        else
+        {
+            brush.setColor(digitBkg[getBitCount(a.digit2)]);
+            painter.setBrush(brush);
+            painter.drawRoundedRect(QRectF(a.startPos.x(), a.startPos.y(), w, h), rX, rY);
+            painter.setPen(QColor::fromRgb(0, 0, 0));
+            painter.drawText(QRectF(a.startPos.x(), a.startPos.y(), w, h), Qt::AlignCenter,
+                             QString::number(a.digit2));
+        }
+        painter.setPen(Qt::NoPen);
+    }
+    else
+    {
+        if (a.startPos.x() > a.endPos.x())   // 方格出现的动画效果
+            a.startPos += dPos[4];
+        else
+            a.startPos = a.endPos, rtn = true;
+        brush.setColor(digitBkg[getBitCount(a.digit)]);
+        painter.setBrush(brush);
+        painter.drawRoundedRect(QRectF(a.startPos.x(), a.startPos.y(),
+                         w - 2 * (a.startPos.x() - a.endPos.x()),
+                         h - 2 * (a.startPos.y() - a.endPos.y())), rX, rY);
+        painter.setPen(QColor::fromRgb(0, 0, 0));
+        painter.drawText(QRectF(a.endPos.x(), a.endPos.y(), w, h),
+                         Qt::AlignCenter, QString::number(a.digit));
+        painter.setPen(Qt::NoPen);
+    }
+    return rtn;
 }
