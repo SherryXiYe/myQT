@@ -2,38 +2,8 @@
 #define GAMEWIDGET_H
 
 #include <QOpenGLWidget>
-//#include <QMouseEvent>
-//#include <QEventLoop>
 #include <QTimer>
-//#include <QPainter>
-//#include <QList>
-
-// 手势的方向
-enum GestureDirect
-{
-    LEFT = 0,   // 向左
-    RIGHT = 1,  // 向右
-    UP = 2,     // 向上
-    DOWN = 3    // 向下
-};
-
-// 定义动画的类型
-enum AnimationType
-{
-    MOVE = 0,       // 方格移动动画
-    APPEARANCE = 1  // 方格出现动画
-};
-
-// 动画结构体
-struct Animation
-{
-    AnimationType type;     // 动画类型
-    GestureDirect direct;   // 方向
-    QPointF startPos;       // 起始点坐标 出现动画仅仅使用这个坐标
-    QPointF endPos;         // 终止点坐标 移动动画的终点坐标
-    int digit;              // 数码
-    int digit2;             // 第二数码 数码可能被合并
-};
+#include <QPainter>
 
 // 游戏部件类 继承自QWidget
 class GameWidget : public QOpenGLWidget
@@ -49,6 +19,7 @@ private:
     bool checkWin();     // 检测游戏是否获胜
     int getBitCount(int);  //获取一个数字对应颜色数组的下标。比如2对应0，8对应2。）
 
+    void paintEvent(QPaintEvent *);  // 绘制事件
     void resizeEvent(QResizeEvent *);    // 窗口尺寸改变事件
 
     int board[4][4];     // 游戏面板 存储每个格子的数值
