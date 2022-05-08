@@ -37,7 +37,7 @@ void GameWidget::restart()    // 初始化相关变量 同构造函数
     digitCount = 2;
     memset(board, 0, sizeof(board));
     init2Block();
-    //emit ScoreInc(score);
+    emit ScoreInc(score);
     update();
 }
 
@@ -122,4 +122,32 @@ void GameWidget::paintEvent(QPaintEvent *)
                 painter.drawRoundedRect(QRectF(7 * ratioW + (w + 5 * ratioW) * j, 7 * ratioH + (h + 5 * ratioH) * i, w, h), rX, rY);
             }
         }
+}
+
+void GameWidget::mousePressEvent(QMouseEvent *e) // 获取起点坐标
+{
+    startPos = e->pos();
+}
+
+void GameWidget::mouseReleaseEvent(QMouseEvent *e)
+{
+    // 根据终点坐标和起点坐标计算XY坐标的增量
+    float dX = (float)(e->pos().x() - startPos.x());
+    float dY = (float)(e->pos().y() - startPos.y());
+    // 确定手势方向
+    GestureDirect dir;
+    if (abs(dX) > abs(dY))
+    {
+        if (dX < 0)
+            emit dir=LEFT;
+        else
+            emit dir=RIGHT;
+    }
+    else
+    {
+        if (dY < 0)
+            emit dir=UP;
+        else
+            emit dir=DOWN;
+    }
 }

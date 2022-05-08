@@ -4,6 +4,17 @@
 #include <QOpenGLWidget>
 #include <QTimer>
 #include <QPainter>
+#include <QMouseEvent>
+
+
+// 手势的方向
+enum GestureDirect
+{
+    LEFT = 0,   // 向左
+    RIGHT = 1,  // 向右
+    UP = 2,     // 向上
+    DOWN = 3    // 向下
+};
 
 // 游戏部件类 继承自QWidget
 class GameWidget : public QOpenGLWidget
@@ -21,10 +32,13 @@ private:
 
     void paintEvent(QPaintEvent *);  // 绘制事件
     void resizeEvent(QResizeEvent *);    // 窗口尺寸改变事件
+    void mousePressEvent(QMouseEvent *);  // 鼠标按下触发的事件
+    void mouseReleaseEvent(QMouseEvent *); // 鼠标释放触发的事件
 
     int board[4][4];     // 游戏面板 存储每个格子的数值
     int digitCount;    // 数码的个数 存储当前面板上的数字的个数
     int score;  // 分数 存储当前得分
+    QPoint startPos; // 起始点坐标 存储手势起点坐标
     qreal w, h;    // 小格子的宽度和高度
     qreal ratioW, ratioH;      // 宽度和高度的缩放比例
     qreal rX, rY;    // 小圆角的 x y
